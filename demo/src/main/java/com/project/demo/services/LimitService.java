@@ -1,5 +1,6 @@
 package com.project.demo.services;
 
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.project.demo.models.Limit;
@@ -14,6 +15,18 @@ import java.util.List;
 public class LimitService {
 
     private LimitsRepository limitRepository;
+
+    @PostConstruct
+    public void initializeRatesOnStartup() {
+        try {
+            Limit limit = new Limit();
+            limit.setLimitDatetime(LocalDateTime.now());
+            setLimit(limit);
+        } catch (Exception e) {
+            // Обработка исключений при запуске приложения
+            e.printStackTrace();
+        }
+    }
 
     public void setLimit(Limit limit) {
         if (limit == null) {
@@ -43,12 +56,6 @@ public class LimitService {
     }
 
     public Limit getLastLimit() {
-        Limit lastLimit = limitRepository.findTopByOrderByLimitDatetimeDesc();
-        if (lastLimit == null) {
-            lastLimit = new Limit();
-            lastLimit.setLimitDatetime(LocalDateTime.now());
-            setLimit(lastLimit);
-        }
-        return lastLimit;
+        return limitRepository.findTopByOrderByLimitDatetimeDesc();
     }
 }

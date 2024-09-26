@@ -1,6 +1,7 @@
 package com.project.demo.services;
 
 import com.project.demo.models.Limit;
+import com.project.demo.models.Rate;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.project.demo.models.Transaction;
@@ -15,6 +16,7 @@ import java.util.List;
 @Service
 public class TransactionService {
 
+    private RateService rateService;
     private LimitService limitService;
     private TransactionsRepository transactionRepository;
 
@@ -40,7 +42,16 @@ public class TransactionService {
         }
 
         BigDecimal limit = lastLimit.getLimitSum();
-        if (totalSum.compareTo(limit) > 0) {
+
+        if(transaction.getCurrencyShortname().equals("KZT")) {
+            double rate = rateService.getKztUsdRate().getRate();
+            totalSum = totalSum.multiply(BigDecimal.valueOf(rate));
+        } else if (transaction.getCurrencyShortname().equals("RUB")) {
+            double rate = rateService.getRubUsdRate().getRate();
+            totalSum = totalSum.multiply(BigDecimal.valueOf(rate));
+        }
+
+        if (totalSum.compareTo(limit) > 0) { // используй перервод валют для сравнения
             transaction.setLimitExceeded(true);
         }
         transactionRepository.save(transaction);
