@@ -30,10 +30,18 @@ public class RateService {
 
     @PostConstruct
     public void initializeRatesOnStartup() {
-        saveRates();  
+        try {
+            saveRates();
+        } catch (Exception e) {
+            // Обработка исключений при запуске приложения
+            e.printStackTrace();
+        }
     }
 
     public CompletableFuture<String> getCurrencyRate(String symbol) {
+        if (symbol == null || symbol.isEmpty()) {
+            throw new IllegalArgumentException("Символ валюты не может быть null или пустым");
+        }
         AsyncHttpClient client = new DefaultAsyncHttpClient();
         return client.prepareGet(BASE_URL + symbol + "&amount=122&apikey=" + API_KEY)
             .execute()
@@ -49,10 +57,18 @@ public class RateService {
     }
 
     public Rate getKztUsdRate() {
-        return repository.findBySymbol("KZT/USD");
+        Rate rate = repository.findBySymbol("KZT/USD");
+        if (rate == null) {
+            throw new IllegalStateException("Курс KZT/USD не найден.");
+        }
+        return rate;
     }
     public Rate getRubUsdRate() {
-        return repository.findBySymbol("RUB/USD");
+        Rate rate = repository.findBySymbol("RUB/USD");
+        if (rate == null) {
+            throw new IllegalStateException("Курс RUB/USD не найден.");
+        }
+        return rate;
     }
 
     public CompletableFuture<Rate> getKztToUsdRate() {
@@ -91,6 +107,8 @@ public class RateService {
             } else if (existingRate != null) {
                 existingRate.setLastUpdated(today);
                 repository.save(existingRate);  
+            } else {
+                throw new IllegalStateException("Не удалось найти или обновить курс KZT/USD.");
             }
         });
         getRubToUsdRate().thenAccept(rate -> {
@@ -102,6 +120,8 @@ public class RateService {
             } else if (existingRate != null) {
                 existingRate.setLastUpdated(today);
                 repository.save(existingRate);
+            } else {
+                throw new IllegalStateException("Не удалось найти или обновить курс KZT/USD.");
             }
         });
     }
