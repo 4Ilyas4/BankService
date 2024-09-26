@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface TransactionsRepository extends JpaRepository<Transaction,Long> {
     List<Transaction> findByExpenseCategory(String expenseCategory);
     List<Transaction> findByCurrencyShortname(String currencyShortname);
-    @Query("SELECT t FROM Transaction t ORDER BY t.datetime DESC")
+    @Query("SELECT t FROM Transaction t ORDER BY t.datetime DESC LIMIT 1")
     Transaction findTopByOrderByDatetimeDesc();
     List<Transaction> findByLimitExceededTrue();
 }
