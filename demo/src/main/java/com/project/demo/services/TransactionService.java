@@ -1,7 +1,6 @@
 package com.project.demo.services;
 
 import com.project.demo.models.Limit;
-import com.project.demo.models.Rate;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.project.demo.models.Transaction;
@@ -21,6 +20,7 @@ public class TransactionService {
     private TransactionsRepository transactionRepository;
 
     public void processTransaction(Transaction transaction) {
+
         BigDecimal totalSum;
 
         if (transaction == null || transaction.getSum() == null) {
@@ -28,15 +28,22 @@ public class TransactionService {
         }
 
         Transaction lastTransaction = getLastTransaction();
+
         if (lastTransaction == null) {
             totalSum = transaction.getSum();
         } else {
-            totalSum = lastTransaction.getTotalSum().add(transaction.getSum());
+            if(LocalDateTime.now().getDayOfMonth() == 1) {
+                totalSum = transaction.getSum();
+            }
+            else {
+                totalSum = lastTransaction.getTotalSum().add(transaction.getSum());
+            }
         }
 
         transaction.setTotalSum(totalSum);
         transaction.setDatetime(LocalDateTime.now());
         Limit lastLimit = limitService.getLastLimit();
+
         if (lastLimit == null || lastLimit.getLimitSum() == null) {
             throw new IllegalStateException("Последний лимит не найден.");
         }
@@ -51,7 +58,7 @@ public class TransactionService {
             totalSum = totalSum.multiply(BigDecimal.valueOf(rate));
         }
 
-        if (totalSum.compareTo(limit) > 0) { // используй перервод валют для сравнения
+        if (totalSum.compareTo(limit) > 0) {
             transaction.setLimitExceeded(true);
         }
         transactionRepository.save(transaction);

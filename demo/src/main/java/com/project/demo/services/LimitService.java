@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import com.project.demo.models.Limit;
 import com.project.demo.repositories.LimitsRepository;
 import jakarta.transaction.Transactional;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,11 +19,13 @@ public class LimitService {
     private LimitsRepository limitRepository;
 
     @PostConstruct
-    public void initializeRatesOnStartup() {
+    public void initializeLimitOnStartup() {
         try {
-            Limit limit = new Limit();
-            limit.setLimitDatetime(LocalDateTime.now());
-            setLimit(limit);
+            if(getLastLimit() == null) {
+                Limit defaultLimit = new Limit();
+                defaultLimit.setLimitDatetime(LocalDateTime.now());
+                limitRepository.save(defaultLimit);
+            }
         } catch (Exception e) {
             // Обработка исключений при запуске приложения
             e.printStackTrace();
@@ -32,9 +36,7 @@ public class LimitService {
         if (limit == null) {
             throw new IllegalArgumentException("Лимит не может быть null");
         }
-
         LocalDateTime now = LocalDateTime.now();
-
         if (now.getDayOfMonth() != 1) {
             throw new IllegalArgumentException("Обновление лимита разрешено только в первое число месяца.");
         }
@@ -48,11 +50,7 @@ public class LimitService {
     }
 
     public List<Limit> getAllLimits() {
-        List<Limit> limits = limitRepository.findAll();
-        if (limits.isEmpty()) {
-            throw new IllegalStateException("Лимиты не найдены.");
-        }
-        return limits;
+        return limitRepository.findAll();
     }
 
     public Limit getLastLimit() {
