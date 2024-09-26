@@ -91,10 +91,6 @@ public class TransactionService {
     }
 
     public List<Transaction> getTransactionsExceedingLimit() {
-        List<Transaction> transactions = transactionRepository.findByLimitExceededTrue();
-        if (transactions == null || transactions.isEmpty()) {
-            throw new IllegalStateException("Нет транзакций, превысивших лимит.");
-        }
-        return transactions;
+        return transactionRepository.findByLimitExceededTrue();
     }
 }

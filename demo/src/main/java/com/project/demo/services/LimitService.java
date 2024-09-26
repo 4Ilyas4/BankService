@@ -36,10 +36,6 @@ public class LimitService {
             throw new IllegalArgumentException("Лимит не может быть null");
         }
         LocalDateTime now = LocalDateTime.now();
-        if (now.getDayOfMonth() != 1) {
-            throw new IllegalArgumentException("Обновление лимита разрешено только в первое число месяца.");
-        }
-
         limit.setLimitDatetime(now);
         Limit lastLimit = limitRepository.findTopByOrderByLimitDatetimeDesc();
         if (lastLimit != null && lastLimit.getLimitDatetime().toLocalDate().equals(now.toLocalDate())) {
