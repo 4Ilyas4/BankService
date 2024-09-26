@@ -25,12 +25,12 @@ public class Limit {
     private Long id;
 
     @Column(nullable = false)
-    private BigDecimal limitSum;
+    private BigDecimal limitSum = BigDecimal.valueOf(1000);
 
-    @Column(nullable = false)
     private LocalDateTime limitDatetime;
 
     @Column(length = 3, nullable = false)
-    private String limitCurrencyShortname;
+    private String limitCurrencyShortname = "USD";
 }
+
 

@@ -1,14 +1,10 @@
 package com.project.demo.services;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.project.demo.models.Limit;
 import com.project.demo.repositories.LimitsRepository;
-
 import jakarta.transaction.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,19 +22,17 @@ public class LimitService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        if (limit.getLimitDatetime() == null || limit.getLimitDatetime().isBefore(now) || limit.getLimitDatetime().isAfter(now)) {
-            throw new IllegalArgumentException("Дата лимита не может быть в прошлом или будущем.");
+        if (now.getDayOfMonth() != 1) {
+            throw new IllegalArgumentException("Обновление лимита разрешено только в первое число месяца.");
         }
 
+        limit.setLimitDatetime(now);
         Limit lastLimit = limitRepository.findTopByOrderByLimitDatetimeDesc();
         if (lastLimit != null && lastLimit.getLimitDatetime().toLocalDate().equals(now.toLocalDate())) {
             throw new IllegalStateException("Невозможно обновить лимит на ту же дату.");
         }
-
-        limit.setLimitDatetime(now);
         limitRepository.save(limit);
     }
-
 
     public List<Limit> getAllLimits() {
         List<Limit> limits = limitRepository.findAll();
@@ -51,7 +45,9 @@ public class LimitService {
     public Limit getLastLimit() {
         Limit lastLimit = limitRepository.findTopByOrderByLimitDatetimeDesc();
         if (lastLimit == null) {
-            throw new IllegalStateException("Последний лимит не найден.");
+            lastLimit = new Limit();
+            lastLimit.setLimitDatetime(LocalDateTime.now());
+            setLimit(lastLimit);
         }
         return lastLimit;
     }

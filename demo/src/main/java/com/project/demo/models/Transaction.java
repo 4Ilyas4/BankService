@@ -39,7 +39,6 @@ public class Transaction {
     @Column(nullable = false)
     private String expenseCategory;
 
-    @Column(nullable = false)
     private LocalDateTime datetime;
 
     @Column(nullable = false)

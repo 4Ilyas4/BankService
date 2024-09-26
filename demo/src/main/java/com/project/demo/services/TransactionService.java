@@ -7,6 +7,7 @@ import com.project.demo.models.Transaction;
 import com.project.demo.repositories.TransactionsRepository;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -15,21 +16,24 @@ import java.util.List;
 public class TransactionService {
 
     private LimitService limitService;
-
     private TransactionsRepository transactionRepository;
 
     public void processTransaction(Transaction transaction) {
+        BigDecimal totalSum;
+
         if (transaction == null || transaction.getSum() == null) {
             throw new IllegalArgumentException("Транзакция и её сумма не могут быть null");
         }
 
         Transaction lastTransaction = getLastTransaction();
-        if (lastTransaction == null || lastTransaction.getTotalSum() == null) {
-            throw new IllegalStateException("Последняя транзакция или её сумма не найдены.");
+        if (lastTransaction == null) {
+            totalSum = transaction.getSum();
+        } else {
+            totalSum = lastTransaction.getTotalSum().add(transaction.getSum());
         }
-        BigDecimal totalSum = lastTransaction.getTotalSum().add(transaction.getSum());
-        transaction.setTotalSum(totalSum);
 
+        transaction.setTotalSum(totalSum);
+        transaction.setDatetime(LocalDateTime.now());
         Limit lastLimit = limitService.getLastLimit();
         if (lastLimit == null || lastLimit.getLimitSum() == null) {
             throw new IllegalStateException("Последний лимит не найден.");
@@ -65,11 +69,7 @@ public class TransactionService {
     }
 
     public Transaction getLastTransaction() {
-        Transaction lastTransaction = transactionRepository.findTopByOrderByDatetimeDesc();
-        if (lastTransaction == null) {
-            throw new IllegalStateException("Последняя транзакция не найдена.");
-        }
-        return lastTransaction;
+        return transactionRepository.findTopByOrderByDatetimeDesc();
     }
 
     public List<Transaction> getTransactionsExceedingLimit() {
