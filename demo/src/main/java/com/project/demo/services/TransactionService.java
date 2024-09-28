@@ -20,15 +20,11 @@ public class TransactionService {
     private TransactionsRepository transactionRepository;
 
     public void processTransaction(Transaction transaction) {
-
         BigDecimal totalSum;
-
         if (transaction == null || transaction.getSum() == null) {
             throw new IllegalArgumentException("Транзакция и её сумма не могут быть null");
         }
-
         Transaction lastTransaction = getLastTransaction();
-
         if (lastTransaction == null) {
             totalSum = transaction.getSum();
         } else {
@@ -39,17 +35,13 @@ public class TransactionService {
                 totalSum = lastTransaction.getTotalSum().add(transaction.getSum());
             }
         }
-
         transaction.setTotalSum(totalSum);
         transaction.setDatetime(LocalDateTime.now());
         Limit lastLimit = limitService.getLastLimit();
-
         if (lastLimit == null || lastLimit.getLimitSum() == null) {
             throw new IllegalStateException("Последний лимит не найден.");
         }
-
         BigDecimal limit = lastLimit.getLimitSum();
-
         if(transaction.getCurrencyShortname().equals("KZT")) {
             double rate = rateService.getKztUsdRate().getRate();
             totalSum = totalSum.multiply(BigDecimal.valueOf(rate));
@@ -57,7 +49,6 @@ public class TransactionService {
             double rate = rateService.getRubUsdRate().getRate();
             totalSum = totalSum.multiply(BigDecimal.valueOf(rate));
         }
-
         if (totalSum.compareTo(limit) > 0) {
             transaction.setLimitExceeded(true);
         }
@@ -68,22 +59,14 @@ public class TransactionService {
         if (category == null || category.isEmpty()) {
             throw new IllegalArgumentException("Категория не может быть null или пустой");
         }
-        List<Transaction> transactions = transactionRepository.findByExpenseCategory(category);
-        if (transactions == null || transactions.isEmpty()) {
-            throw new IllegalStateException("Транзакции для категории '" + category + "' не найдены.");
-        }
-        return transactions;
+        return transactionRepository.findByExpenseCategory(category);
     }
 
     public List<Transaction> getTransactionsByCurrency(String currency) {
         if (currency == null || currency.isEmpty()) {
             throw new IllegalArgumentException("Валюта не может быть null или пустой");
         }
-        List<Transaction> transactions = transactionRepository.findByCurrencyShortname(currency);
-        if (transactions == null || transactions.isEmpty()) {
-            throw new IllegalStateException("Транзакции для валюты '" + currency + "' не найдены.");
-        }
-        return transactions;
+        return transactionRepository.findByCurrencyShortname(currency);
     }
 
     public Transaction getLastTransaction() {

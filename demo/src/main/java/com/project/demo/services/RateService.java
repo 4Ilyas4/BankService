@@ -57,18 +57,11 @@ public class RateService {
     }
 
     public Rate getKztUsdRate() {
-        Rate rate = repository.findBySymbol("KZT/USD");
-        if (rate == null) {
-            throw new IllegalStateException("Курс KZT/USD не найден.");
-        }
-        return rate;
+        return repository.findBySymbol("KZT/USD");
     }
+
     public Rate getRubUsdRate() {
-        Rate rate = repository.findBySymbol("RUB/USD");
-        if (rate == null) {
-            throw new IllegalStateException("Курс RUB/USD не найден.");
-        }
-        return rate;
+        return repository.findBySymbol("RUB/USD");
     }
 
     public CompletableFuture<Rate> getKztToUsdRate() {
@@ -100,7 +93,6 @@ public class RateService {
         LocalDate today = LocalDate.now();
         getKztToUsdRate().thenAccept(rate -> {
             Rate existingRate = repository.findBySymbol("KZT/USD");
-
             if (rate != null && rate.getRate() > 0) {
                 rate.setLastUpdated(today);
                 repository.save(rate);  
@@ -113,7 +105,6 @@ public class RateService {
         });
         getRubToUsdRate().thenAccept(rate -> {
             Rate existingRate = repository.findBySymbol("RUB/USD");
-
             if (rate != null && rate.getRate() > 0) {
                 rate.setLastUpdated(today);
                 repository.save(rate); 

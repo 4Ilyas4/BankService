@@ -2,6 +2,13 @@ server:
     port: 8080
     address: 127.0.0.1
 spring:
+    flyway:
+        enabled: false
+        locations: classpath:db/migration
+        baseline-on-migrate: true
+        connectRetries: 3
+        encoding: UTF-8
+        clean-disabled: true
     datasource:
         url: jdbc:postgresql://localhost:5432/bankDataBase
         username: postgres
@@ -9,6 +16,7 @@ spring:
         driver-class-name: org.postgresql.Driver
     jpa:
         hibernate:
-            ddl-auto: create-drop
+            ddl-auto: create
         database: postgresql
         show-sql: true
+

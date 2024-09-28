@@ -19,15 +19,10 @@ public class LimitService {
 
     @PostConstruct
     public void initializeLimitOnStartup() {
-        try {
-            if(getLastLimit() == null) {
-                Limit defaultLimit = new Limit();
-                defaultLimit.setLimitDatetime(LocalDateTime.now());
-                limitRepository.save(defaultLimit);
-            }
-        } catch (Exception e) {
-            // Обработка исключений при запуске приложения
-            e.printStackTrace();
+        if(getLastLimit() == null) {
+            Limit defaultLimit = new Limit();
+            defaultLimit.setLimitDatetime(LocalDateTime.now());
+            limitRepository.save(defaultLimit);
         }
     }
 
