@@ -1,0 +1,12 @@
+com\project\demo\controllers\ClientController.class
+com\project\demo\controllers\TransactionsController.class
+com\project\demo\repositories\TransactionsRepository.class
+com\project\demo\services\LimitService.class
+com\project\demo\models\Limit.class
+com\project\demo\models\Transaction.class
+com\project\demo\repositories\LimitsRepository.class
+com\project\demo\services\RateService.class
+com\project\demo\services\TransactionService.class
+com\project\demo\BankApplication.class
+com\project\demo\repositories\RateRepository.class
+com\project\demo\models\Rate.class

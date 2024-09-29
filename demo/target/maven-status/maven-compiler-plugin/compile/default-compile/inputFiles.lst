@@ -1,0 +1,12 @@
+C:\Users\user\Desktop\SpringProject\BankService\demo\src\main\java\com\project\demo\BankApplication.java
+C:\Users\user\Desktop\SpringProject\BankService\demo\src\main\java\com\project\demo\controllers\ClientController.java
+C:\Users\user\Desktop\SpringProject\BankService\demo\src\main\java\com\project\demo\controllers\TransactionsController.java
+C:\Users\user\Desktop\SpringProject\BankService\demo\src\main\java\com\project\demo\models\Limit.java
+C:\Users\user\Desktop\SpringProject\BankService\demo\src\main\java\com\project\demo\models\Rate.java
+C:\Users\user\Desktop\SpringProject\BankService\demo\src\main\java\com\project\demo\models\Transaction.java
+C:\Users\user\Desktop\SpringProject\BankService\demo\src\main\java\com\project\demo\repositories\LimitsRepository.java
+C:\Users\user\Desktop\SpringProject\BankService\demo\src\main\java\com\project\demo\repositories\RateRepository.java
+C:\Users\user\Desktop\SpringProject\BankService\demo\src\main\java\com\project\demo\repositories\TransactionsRepository.java
+C:\Users\user\Desktop\SpringProject\BankService\demo\src\main\java\com\project\demo\services\LimitService.java
+C:\Users\user\Desktop\SpringProject\BankService\demo\src\main\java\com\project\demo\services\RateService.java
+C:\Users\user\Desktop\SpringProject\BankService\demo\src\main\java\com\project\demo\services\TransactionService.java
