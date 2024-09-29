@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1")
 public class ClientController {
-    
+
     private TransactionService transactionService;
     private LimitService limitService;
 
