@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1")
 public class ClientController {
-
+    
     private TransactionService transactionService;
     private LimitService limitService;
 
@@ -29,18 +29,6 @@ public class ClientController {
     public ResponseEntity<List<Limit>> getAllLimits() {
         List<Limit> limits = limitService.getAllLimits();
         return ResponseEntity.ok(limits);
-    }
-
-    @GetMapping("/transactions/{category}")
-    public ResponseEntity<List<Transaction>> getTransactionsByCategory(@PathVariable String category) {
-        List<Transaction> transactions = transactionService.getTransactionsByCategory(category);
-        return ResponseEntity.ok(transactions);
-    }
-
-    @GetMapping("/transactions/currency/{currency}")
-    public ResponseEntity<List<Transaction>> getTransactionsByCurrency(@PathVariable String currency) {
-        List<Transaction> transactions =  transactionService.getTransactionsByCurrency(currency);
-        return ResponseEntity.ok(transactions);
     }
 
     @GetMapping("/transactions/limit_exceeded")
